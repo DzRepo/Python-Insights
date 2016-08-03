@@ -17,7 +17,6 @@ def parameter_help():
     print ("./AudienceAPI.py set-access-token-secret ACCESS_TOKEN_SECRET")
     print ("./AudienceAPI.py set-consumer-key CONSUMER_KEY")
     print ("./AudienceAPI.py set-consumer-secret CONSUMER_SECRET")
-    print ("./AudienceAPI.py create-segment SEGMENT_NAME")
     print ("./AudienceAPI.py create-followed-segment SEGMENT_NAME USER_ID")
     print ("./AudienceAPI.py create-engagement-segment SEGMENT_NAME USER_ID")
     print ("./AudienceAPI.py create-impressed-segment SEGMENT_NAME USER_ID")

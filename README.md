@@ -13,7 +13,6 @@ Sample app that uses all functions of Audience API.  Execute ./AudienceAPI.py to
 ./AudienceAPI.py set-access-token-secret ACCESS_TOKEN_SECRET
 ./AudienceAPI.py set-consumer-key CONSUMER_KEY
 ./AudienceAPI.py set-consumer-secret CONSUMER_SECRET
-./AudienceAPI.py create-segment SEGMENT_NAME
 ./AudienceAPI.py create-followed-segment SEGMENT_NAME USER_ID
 ./AudienceAPI.py create-engagement-segment SEGMENT_NAME USER_ID
 ./AudienceAPI.py create-impressed-segment SEGMENT_NAME USER_ID
