@@ -1,16 +1,15 @@
 # Python Utilities for working with Gnip Audience and Engagement APIs
-See: (Audience API)[http://support.gnip.com/apis/audience_api/] and (Engagement API)[http://support.gnip.com/apis/engagement_api/] for more information.
+See: [Audience API](http://support.gnip.com/apis/audience_api/) and [Engagement API](http://support.gnip.com/apis/engagement_api/) for more information.
 
-Requires _Requests_ library - http://docs.python-requests.org/en/master/
-pip install requests
+Requires [Requests](http://docs.python-requests.org/en/master/) library - to install: 
+`pip install requests`
 
 #gnip_insights.py
 Library used to access Audience and Engagement APIs
-
 #AudienceAPI.py
 Sample app that uses all functions of Audience API.  Execute ./AudienceAPI.py to get help.
 
-#gnip_engagement_test.py
+#gnip\_engagement\_test.py
 Sample app to demonstrate retrieving engagement data for owned and authorized Tweets.  (improvements to come!)
 
 Please send help requests / comments / complaints / chocolate to stevedz@twitter.com
