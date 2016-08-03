@@ -1,4 +1,5 @@
-# Python Utilities for working with Gnip Audience and Engagemnent APIs
+# Python Utilities for working with Gnip Audience and Engagement APIs
+See: (Audience API)[http://support.gnip.com/apis/audience_api/] and (Engagement API)[http://support.gnip.com/apis/engagement_api/] for more information.
 
 Requires _Requests_ library - http://docs.python-requests.org/en/master/
 pip install requests
