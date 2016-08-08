@@ -29,7 +29,7 @@ Sample app that uses all functions of Audience API.  Execute ./AudienceAPI.py to
 ./AudienceAPI.py usage
 ```
 
-![Audience API Demo Pic](https://github.com/GnipDz/Python-Insights/master/AudienceAPI.jpg "Sample usage of app")
+![Audience API Demo Pic](https://github.com/GnipDz/Python-Insights/blob/master/AudienceAPI.jpg "Sample usage of app")
 
 
 ##gnip\_engagement\_test.py
