@@ -7,28 +7,6 @@ Library used to access Audience and Engagement APIs
 ##AudienceAPI.py
 Sample app that uses all functions of Audience API.  Execute ./AudienceAPI.py to get show usage help:
 
-```
-./AudienceAPI.py ACTION [ parameters ]
-./AudienceAPI.py set-access-token ACCESS_TOKEN
-./AudienceAPI.py set-access-token-secret ACCESS_TOKEN_SECRET
-./AudienceAPI.py set-consumer-key CONSUMER_KEY
-./AudienceAPI.py set-consumer-secret CONSUMER_SECRET
-./AudienceAPI.py create-followed-segment SEGMENT_NAME USER_ID
-./AudienceAPI.py create-engagement-segment SEGMENT_NAME USER_ID
-./AudienceAPI.py create-impressed-segment SEGMENT_NAME USER_ID
-./AudienceAPI.py create-tailored-segment SEGMENT_NAME
-./AudienceAPI.py create-segment SEGMENT_NAME
-./AudienceAPI.py append-segment SEGMENT_NAME USERID_FILENAME.CSV
-./AudienceAPI.py create-audience AUDIENCE_NAME SEGMENT_NAME SEGMENT_NAME ...
-./AudienceAPI.py query-audience AUDIENCE_NAME GROUPING_NAME_1 GROUPING_NAME_2 ... (up to 10 groupings) 
-./AudienceAPI.py delete-audience AUDIENCE_NAME
-./AudienceAPI.py delete-segment SEGMENT_NAME
-./AudienceAPI.py list-audiences
-./AudienceAPI.py list-segments
-./AudienceAPI.py list-groupings
-./AudienceAPI.py usage
-```
-
 ![Audience API Demo Pic](https://github.com/GnipDz/Python-Insights/blob/master/AudienceAPI.jpg "Sample usage of app")
 
 
