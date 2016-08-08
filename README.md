@@ -1,4 +1,4 @@
-# Python scripts for working with [Gnip](www.gnip.com) Audience and Engagement APIs
+# Python scripts for working with [Gnip](http://www.gnip.com) Audience and Engagement APIs
 See:  the Support web site sections on [Audience API](http://support.gnip.com/apis/audience_api/) and [Engagement API](http://support.gnip.com/apis/engagement_api/) for more information.
 ###Note: Requires [Requests](http://docs.python-requests.org/en/master/) library - to install: 
 `pip install requests`
