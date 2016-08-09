@@ -1,6 +1,7 @@
 # Python scripts for working with [Gnip](http://www.gnip.com) Audience and Engagement APIs
 See:  the Support web site sections on [Audience API](http://support.gnip.com/apis/audience_api/) and [Engagement API](http://support.gnip.com/apis/engagement_api/) for more information.
-###Note: Requires [Requests](http://docs.python-requests.org/en/master/) and [Requests-OAuthlib](https://requests-oauthlib.readthedocs.io/en/latest/) libraries. - to install: 
+###Note: Requires [Requests](http://docs.python-requests.org/en/master/) and [Requests-OAuthlib](https://requests-oauthlib.readthedocs.io/en/latest/) libraries.
+To install: 
 `pip install requests requests_oauthlib`
 ##gnip_insights.py
 Library used to access Audience and Engagement APIs
