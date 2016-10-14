@@ -212,6 +212,7 @@ class Audience(Insights):
                                      headers=Insights.json_header,
                                      data=json.dumps(request_json)
                                      )
+
         return post_request
 
     def get_usage(self):
