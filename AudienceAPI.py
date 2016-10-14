@@ -169,64 +169,54 @@ def get_groupings():
     return groupings
 
 
-def set_access_token():
-    ConfigFile.set_property("gnip.cfg", "oauth", "token", sys.argv[2])
+def set_access_token(a_token):
+    ConfigFile.set_property("gnip.cfg", "oauth", "token", a_token)
     return
 
 
-def set_access_token_secret():
-    ConfigFile.set_property("gnip.cfg", "oauth", "tokensecret", sys.argv[2])
+def set_access_token_secret(a_secret):
+    ConfigFile.set_property("gnip.cfg", "oauth", "tokensecret", a_secret)
     return
 
 
-def set_consumer_key():
-    ConfigFile.set_property("gnip.cfg", "oauth", "consumerkey", sys.argv[2])
+def set_consumer_key(a_key):
+    ConfigFile.set_property("gnip.cfg", "oauth", "consumerkey", a_key)
     return
 
 
-def set_consumer_secret():
-    ConfigFile.set_property("gnip.cfg", "oauth", "consumersecret", sys.argv[2])
+def set_consumer_secret(c_secret):
+    ConfigFile.set_property("gnip.cfg", "oauth", "consumersecret", c_secret)
     return
 
 
-def create_followed_segment():
-    segment_name = sys.argv[2]
-    user_id = sys.argv[3:]
+def create_followed_segment(segment_name, user_id):
+    print("Segment name", segment_name, " user ID:", user_id)
     audience = get_audience_object()
     response = audience.create_segment_from_followers(segment_name, user_id)
-    print (response.text)
-    return
+    return response.text
 
 
-def create_engagement_segment():
-    segment_name = sys.argv[2]
-    user_id = sys.argv[3:]
+def create_engagement_segment(segment_name, user_ids):
     audience = get_audience_object()
-    response = audience.create_segment_from_engaged(segment_name, user_id)
-    print(response.text)
-    return
+    response = audience.create_segment_from_engaged(segment_name, user_ids)
+    return response.text
 
 
-def create_impressed_segment():
-    segment_name = sys.argv[2]
-    user_id = sys.argv[3:]
+def create_impressed_segment(segment_name, user_ids):
     audience = get_audience_object()
-    response = audience.create_segment_from_impressed(segment_name, user_id)
-    print(response.text)
-    return
+    response = audience.create_segment_from_impressed(segment_name, user_ids)
+    return response.text
 
 
-def create_tailored_segment():
-    segment_name = sys.argv[2]
-    audience_ids = sys.argv[3:]
+def create_tailored_segment(segment_name, audience_ids):
     audience = get_audience_object()
     response = audience.create_segment_from_tailored(segment_name, audience_ids)
-    print(response.text)
+    return response.text
 
 
-def create_segment():
+def create_segment(segment_name):
     audience = get_audience_object()
-    segment_create_response = audience.create_segment(sys.argv[2])
+    segment_create_response = audience.create_segment(segment_name)
     if segment_create_response.status_code == requests.codes.created:
         print(json.dumps(segment_create_response.json()))
     else:
@@ -237,11 +227,9 @@ def create_segment():
     return
 
 
-def append_segment():
+def append_segment(segment_name, user_id_filename):
     audience = get_audience_object()
     segment_upload_size = 100000
-    segment_name = sys.argv[2]
-    user_id_filename = sys.argv[3]
 
     id_list = []
     append_to_id = None
@@ -251,12 +239,12 @@ def append_segment():
         for segment in segments.json()['segments']:
             if segment['name'] == segment_name:
                 append_to_id = segment['id']
-        print("  Segment id:", append_to_id)
     elif segments.status_code == requests.codes.unauthorized:
-        print('{"errors":["Segment Append Error - Unauthorized.  Check keys and tokens"]}')
+        return '{"errors":["Segment Append Error - Unauthorized.  Check keys and tokens"]}'
     else:
-        print(segments.text)
+        return segments.text
 
+    # Still good!
     if append_to_id is not None:
         try:
             with open(user_id_filename) as user_id_file:
@@ -264,7 +252,7 @@ def append_segment():
                     if 5 < len(user_id) < 20:
                         id_list.append(user_id[:-1])
         except IOError:
-            print('{"errors":["Cannot Find or open: ' + user_id_filename + '"]}')
+            return '{"errors":["Cannot Find or open: ' + user_id_filename + '"]}'
 
         loop_flag = True
         start_id = 0
@@ -277,26 +265,19 @@ def append_segment():
 
             segment_append_response = audience.append_to_segment(append_to_id, id_list[start_id:max_id])
             if segment_append_response.status_code == requests.codes.ok:
-                print(json.dumps(segment_append_response.json()))
+                # return(json.dumps(segment_append_response.json()))
                 del id_list[start_id:max_id]
                 if max_id < segment_upload_size:
                     loop_flag = False
             elif segment_append_response.status_code == requests.codes.unauthorized:
-                print('{"errors":["Append Segment Error - Unauthorized.  Check keys and tokens"]}')
-                loop_flag = False
+                return '{"errors":["Append Segment Error - Unauthorized.  Check keys and tokens"]}'
             else:
-                print(segment_append_response.text)
-    return
+                return segment_append_response.text
 
 
-def create_audience():
-    audience_name = sys.argv[2]
-    segment_name = []
+def create_audience(audience_name, segment_name):
 
     audience = get_audience_object()
-
-    for arg in sys.argv[3:]:
-        segment_name.append(arg)
 
     segment_ids = []
     segments = audience.get_segments()
@@ -308,64 +289,60 @@ def create_audience():
                     segment_ids.append(segment['id'])
     else:
         if segments.status_code == requests.codes.unauthorized:
-            print('{"errors":["Create Audience Error (get_segments) - Unauthorized.  Check keys and tokens"]}')
+            return '{"errors":["Create Audience Error (get_segments) - Unauthorized.  Check keys and tokens"]}'
         else:
-            print(segments.text)
+            return '{"errors":["Create Audience Error (get_segments) - Unknown: " + segments.text]}'
 
     if len(segment_ids) > 0:
         audience_create_response = audience.create_audience(audience_name, segment_ids)
         if audience_create_response.status_code == requests.codes.created:
-            print(json.dumps(audience_create_response.json()))
+            return json.dumps(audience_create_response.json())
         elif audience_create_response.status_code == requests.codes.unauthorized:
-            print('{"errors":["Audience Create Error - Unauthorized.  Check keys and tokens"]}')
+            return '{"errors":["Audience Create Error - Unauthorized.  Check keys and tokens"]}'
         else:
-            print(audience_create_response.text)
+            return audience_create_response.text
     else:
-        print('{"errors":["Create Audience Error - No valid segments Found."]}')
-    return
+        return '{"errors":["Create Audience Error - No valid segments Found."]}'
 
 
-def query_audience():
-    audience_name = sys.argv[2]
+def query_audience(audience_name, query_groupings):
     groupings = get_groupings()
-    query_groupings = {}
     errors = []
     error_flag = False
-    for arg in sys.argv[3:]:
-        if arg in groupings:
-            query_groupings[arg] = groupings[arg]
-        else:
-            errors.append({"Grouping: " + arg + " not found."})
+    query_list = {}
+
+    for grouping in query_groupings:
+        if grouping not in groupings:
+            errors.append({"Grouping: " + grouping + " not found."})
             error_flag = True
+        else:
+            query_list[grouping] = groupings[grouping]
 
     if error_flag:
         error_message = {"errors": errors}
-        print(error_message)
-
+        return error_message
     else:
         audience = get_audience_object()
         get_audiences_response = audience.get_audiences()
         if get_audiences_response.status_code == requests.codes.ok:
             for audience_item in get_audiences_response.json()['audiences']:
                 if audience_item["name"] == audience_name:
-                    query = {"groupings": query_groupings}
+                    query = {"groupings": query_list}
                     audience_query_response = audience.get_audience_query(audience_item["id"], query)
                     if audience_query_response.status_code == requests.codes.ok:
-                        print(json.dumps(audience_query_response.json()))
+                        return json.dumps(audience_query_response.json())
                     elif audience_query_response.status_code == requests.codes.unauthorized:
-                        print('{"errors":["Audience Query Error - Unauthorized.  Check keys and tokens"]}')
+                        return'{"errors":["Audience Query Error - Unauthorized.  Check keys and tokens"]}'
                     else:
-                        print(audience_query_response.text)
+                        return audience_query_response.text
         else:
             if get_audiences_response.status_code == requests.codes.unauthorized:
-                print('{"errors":["Query Audience Error (get-audiences) - Unauthorized.  Check keys and tokens"]}')
+                return '{"errors":["Query Audience Error (get-audiences) - Unauthorized.  Check keys and tokens"]}'
             else:
-                print(get_audiences_response.text)
-    return
+                return get_audiences_response.text
 
 
-def delete_audience():
-    audience_name = sys.argv[2]
+def delete_audience(audience_name):
     audience = get_audience_object()
     get_audiences_response = audience.get_audiences()
     if get_audiences_response.status_code == requests.codes.ok:
@@ -384,8 +361,7 @@ def delete_audience():
     return
 
 
-def delete_segment():
-    segment_name = sys.argv[2]
+def delete_segment(segment_name):
     audience = get_audience_object()
     segments = audience.get_segments()
     if segments.status_code == requests.codes.ok:
@@ -418,44 +394,38 @@ def list_audiences():
     audience = get_audience_object()
     audiences_response = audience.get_audiences()
     if audiences_response.status_code == requests.codes.ok:
-        print(json.dumps(audiences_response.json()))
+        return json.dumps(audiences_response.json())
     elif audiences_response.status_code == requests.codes.unauthorized:
-        print('{"errors":["List Audiences Error - Unauthorized.  Check keys and tokens"]}')
+        return '{"errors":["List Audiences Error - Unauthorized.  Check keys and tokens"]}'
     else:
-        print(audiences_response.text)
-    return
+        return audiences_response.text
 
 
 def list_segments():
     audience = get_audience_object()
     segments_response = audience.get_segments()
     if segments_response.status_code == requests.codes.ok:
-        print(json.dumps(segments_response.json()))
+        return json.dumps(segments_response.json())
     elif segments_response.status_code == requests.codes.unauthorized:
-        print('{"errors":["List Segments Error - Unauthorized.  Check keys and tokens"]}')
+        return '{"errors":["List Segments Error - Unauthorized.  Check keys and tokens"]}'
     else:
-        print(segments_response.text)
-    return
+        return segments_response.text
 
 
 def list_grouping_names():
     groupings = get_groupings()
-    print('{"groupings":["', end="")
-    print('","'.join(map(str, sorted(groupings.keys()))), end="")
-    print('"]}')
-    return
+    return '{"groupings":["' + '","'.join(map(str, sorted(groupings.keys()))) + '"]}'
 
 
 def get_usage():
     audience = get_audience_object()
     usage_response = audience.get_usage()
     if usage_response.status_code == requests.codes.ok:
-        print(json.dumps(usage_response.json()))
+        return json.dumps(usage_response.json())
     elif usage_response.status_code == requests.codes.unauthorized:
-        print('{"errors":["Usage - Unauthorized.  Check keys and tokens"]}')
+        return '{"errors":["Usage - Unauthorized.  Check keys and tokens"]}'
     else:
-        print(usage_response.text)
-    return
+        return usage_response.text
 
 
 if __name__ == "__main__":
@@ -464,53 +434,56 @@ if __name__ == "__main__":
 
     if action.lower() == "set-access-token":
         arg_count_check(1)
-        set_access_token()
+        set_access_token(sys.argv[2])
     elif action.lower() == "set-access-token-secret":
         arg_count_check(1)
-        set_access_token_secret()
+        set_access_token_secret(sys.argv[2])
     elif action.lower() == "set-consumer-key":
         arg_count_check(1)
-        set_consumer_key()
+        set_consumer_key(sys.argv[2])
     elif action.lower() == "set-consumer-secret":
         arg_count_check(1)
-        set_consumer_secret()
+        set_consumer_secret(sys.argv[2])
     elif action.lower() == "create-segment":
         arg_count_check(2)
-        create_segment()
+        print(create_segment(sys.argv[2]))
     elif action.lower() == "create-followed-segment":
         arg_count_check(2)
-        create_followed_segment()
+        print (create_followed_segment(sys.argv[2], sys.argv[3:]))
     elif action.lower() == "create-engagement-segment":
         arg_count_check(2)
-        create_engagement_segment()
+        print(create_engagement_segment(sys.argv[2], sys.argv[3:]))
     elif action.lower() == "create-impressed-segment":
         arg_count_check(2)
-        create_impressed_segment()
+        print(create_impressed_segment(sys.argv[2], sys.argv[3:]))
     elif action.lower() == "create-tailored-segment":
         arg_count_check(2)
-        create_tailored_segment()
+        print(create_tailored_segment(sys.argv[2], sys.argv[3:]))
     elif action.lower() == "append-segment":
         arg_count_check(3)
-        append_segment()
+        print(append_segment(sys.argv[2],  sys.argv[3]))
     elif action.lower() == "create-audience":
         arg_count_check(3)
-        create_audience()
+        segment_names = []
+        for arg in sys.argv[3:]:
+            segment_names.append(arg)
+        print(create_audience(sys.argv[2], segment_names))
     elif action.lower() == "query-audience":
         arg_count_check(3)
-        query_audience()
+        print (query_audience(sys.argv[2], sys.argv[3:]))
     elif action.lower() == "delete-audience":
         arg_count_check(2)
-        delete_audience()
+        print(delete_audience(sys.argv[2]))
     elif action.lower() == "delete-segment":
         arg_count_check(2)
-        delete_segment()
+        print(delete_segment(sys.argv[2]))
     elif action.lower() == "list-audiences":
-        list_audiences()
+        print (list_audiences())
     elif action.lower() == "list-segments":
-        list_segments()
+        print (list_segments())
     elif action.lower() == "list-groupings":
-        list_grouping_names()
+        print(list_grouping_names())
     elif action.lower() == "usage":
-        get_usage()
+        print (get_usage())
     else:
         parameter_help()
